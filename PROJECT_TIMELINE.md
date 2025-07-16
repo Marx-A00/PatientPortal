@@ -19,11 +19,11 @@ Building a patient portal application with Blazor Server, Okta authentication, E
 **Goal**: Establish solid database foundation and fix current issues
 
 #### Morning Session (4 hours)
-- [ ] Fix empty migration issue
+- [x] Fix empty migration issue
   - Delete existing migration
   - Recreate migration with proper Patient table
   - Run `Update-Database` to create tables
-- [ ] Add seed data for testing
+- [] Add seed data for testing
 - [ ] Create repository pattern implementation
   - `IPatientRepository` interface
   - `PatientRepository` implementation
