@@ -46,7 +46,7 @@ Building a patient portal application with Blazor Server, Okta authentication, E
 #### Day 3 Morning (4 hours)
 - [x] Create Okta developer account
 - [x] Register application in Okta
-- [ ] Install required NuGet packages:
+- [x] Install required NuGet packages:
   - `Okta.AspNetCore`
   - `Microsoft.AspNetCore.Authentication.OpenIdConnect`
 - [ ] Configure authentication in Program.cs

@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using Okta.AspNetCore;
 using PatientPortal.Data;
 using PatientPortal.Repositories;
 using PatientPortal.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,23 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+
+}).AddCookie()
+.AddOktaMvc(new OktaMvcOptions
+{
+        // Replace the Okta placeholders in appsettings.json with your Okta configuration.
+    OktaDomain = builder.Configuration.GetValue<string>("Okta:OktaDomain"),
+    ClientId = builder.Configuration.GetValue<string>("Okta:ClientId"),
+    ClientSecret = builder.Configuration.GetValue<string>("Okta:ClientSecret"),
+    AuthorizationServerId = builder.Configuration.GetValue<string>("Okta:AuthorizationServerId"),
+
+});
+
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
