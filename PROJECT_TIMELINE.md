@@ -24,21 +24,21 @@ Building a patient portal application with Blazor Server, Okta authentication, E
   - Recreate migration with proper Patient table
   - Run `Update-Database` to create tables
 - [x] Add seed data for testing
-- [ ] Create repository pattern implementation
+- [x] Create repository pattern implementation
   - `IPatientRepository` interface
   - `PatientRepository` implementation
-- [ ] Configure dependency injection in Program.cs
+- [x] Configure dependency injection in Program.cs
 
 #### Afternoon Session (4 hours)
-- [ ] Create service layer
+- [x] Create service layer
   - `IPatientService` interface
   - `PatientService` implementation
-- [ ] Add DTOs for Patient operations
+- [x] Add DTOs for Patient operations
   - `PatientCreateDto`
   - `PatientUpdateDto`
   - `PatientResponseDto`
-- [ ] Implement basic validation logic
-- [ ] Add logging configuration
+- [x] Implement basic validation logic
+- [x] Add logging configuration
 
 ### Day 3-4: Okta Authentication Setup
 **Goal**: Complete authentication integration
