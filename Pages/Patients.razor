@@ -7,6 +7,9 @@
 <PageTitle>Patients</PageTitle>
 
 <h3>Patient List</h3>
+<AuthorizeView>
+    <Authorized>
+
 
 @if (patients == null)
 {
@@ -56,3 +59,8 @@ else
         }
     }
 }
+    </Authorized>
+    <NotAuthorized>
+        need 2 sign in cuh
+    </NotAuthorized>
+</AuthorizeView>

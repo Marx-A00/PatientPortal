@@ -49,19 +49,19 @@ Building a patient portal application with Blazor Server, Okta authentication, E
 - [x] Install required NuGet packages:
   - `Okta.AspNetCore`
   - `Microsoft.AspNetCore.Authentication.OpenIdConnect`
-- [ ] Configure authentication in Program.cs
-- [ ] Set up Okta settings in appsettings.json
+- [x] Configure authentication in Program.cs
+- [x] Set up Okta settings in appsettings.json
 
 #### Day 3 Afternoon (4 hours)
-- [ ] Create login/logout components
-- [ ] Implement `AuthorizeView` in main layout
-- [ ] Create user profile display component
-- [ ] Test authentication flow end-to-end
+- [x] Create login/logout components
+- [x] Implement `AuthorizeView` in main layout
+- [x] Create user profile display component
+- [x] Test authentication flow end-to-end
 
 #### Day 4 Morning (4 hours)
-- [ ] Configure authorization policies
+- [x] Configure authorization policies
 - [ ] Add role-based access control
-- [ ] Secure existing pages with `[Authorize]`
+- [x] Secure existing pages with `[Authorize]`
 - [ ] Create unauthorized access page
 
 #### Day 4 Afternoon (4 hours)
