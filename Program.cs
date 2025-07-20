@@ -40,6 +40,17 @@ builder.Services.AddAuthentication(options =>
     AuthorizationServerId = builder.Configuration.GetValue<string>("Okta:AuthorizationServerId"),
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ApiPolicy", policy =>
+    {
+        policy.WithOrigins("https://localhost:7047", "http://localhost:5245")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -52,6 +63,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("ApiPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
