@@ -26,6 +26,10 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddHttpClient<IApiHttpClient, ApiHttpClient>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

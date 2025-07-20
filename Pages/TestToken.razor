@@ -1,0 +1,78 @@
+@page "/test-token"
+@using PatientPortal.Services
+@inject ITokenService TokenService
+@inject ILogger<TestToken> Logger
+
+<PageTitle>Test Token Service</PageTitle>
+
+<h3>Token Service Test</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Authentication Test</h5>
+                
+                @if (accessToken != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>✅ Token Retrieved Successfully!</strong>
+                        <br />
+                        <small>Token length: @accessToken.Length characters</small>
+                        <br />
+                        <small>First 50 chars: @accessToken.Substring(0, Math.Min(50, accessToken.Length))...</small>
+                    </div>
+                }
+                else if (isLoading)
+                {
+                    <div class="alert alert-info">🔄 Loading token...</div>
+                }
+                else if (errorMessage != null)
+                {
+                    <div class="alert alert-danger">❌ Error: @errorMessage</div>
+                }
+                
+                <button class="btn btn-primary" @onclick="TestTokenRetrieval">
+                    Test Token Retrieval
+                </button>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-warning">Please log in to test token service.</div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string? accessToken;
+    private string? errorMessage;
+    private bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await TestTokenRetrieval();
+    }
+
+    private async Task TestTokenRetrieval()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = null;
+            StateHasChanged();
+            
+            accessToken = await TokenService.GetAccessTokenAsync();
+            Logger.LogInformation("Token test completed. Token available: {HasToken}", !string.IsNullOrEmpty(accessToken));
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            Logger.LogError(ex, "Error testing token service");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+} 

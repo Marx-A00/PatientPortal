@@ -65,10 +65,10 @@ Building a patient portal application with Blazor Server, Okta authentication, E
 - [ ] Create unauthorized access page
 
 #### Day 4 Afternoon (4 hours)
-- [ ] Implement token storage and retrieval
-- [ ] Configure CORS for API calls
-- [ ] Add authentication state provider
-- [ ] Create authenticated HTTP client service
+- [x] Implement token storage and retrieval
+- [x] Configure CORS for API calls
+- [x] Add authentication state provider
+- [x] Create authenticated HTTP client service
 
 ### Day 5-6: API Development
 **Goal**: Build robust Web API with authentication

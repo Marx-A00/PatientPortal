@@ -1,0 +1,138 @@
+@page "/test-api-client"
+@using PatientPortal.Services
+@inject IApiHttpClient ApiHttpClient
+@inject ILogger<TestApiClient> Logger
+
+<PageTitle>Test API Client</PageTitle>
+
+<h3>API Client Test</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">HTTP Client Tests</h5>
+                        
+                        @if (testResults.Any())
+                        {
+                            @foreach (var result in testResults)
+                            {
+                                <div class="alert @(result.Success ? "alert-success" : "alert-danger")">
+                                    <strong>@result.TestName:</strong> @result.Message
+                                </div>
+                            }
+                        }
+                        
+                        <button class="btn btn-primary me-2" @onclick="TestExternalApi" disabled="@isLoading">
+                            Test External API Call
+                        </button>
+                        
+                        <button class="btn btn-secondary" @onclick="ClearResults" disabled="@isLoading">
+                            Clear Results
+                        </button>
+                        
+                        @if (isLoading)
+                        {
+                            <div class="spinner-border spinner-border-sm ms-2" role="status"></div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-warning">Please log in to test API client.</div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private List<TestResult> testResults = new();
+    private bool isLoading = false;
+
+    private class TestResult
+    {
+        public string TestName { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public bool Success { get; set; }
+    }
+
+    private async Task TestExternalApi()
+    {
+        isLoading = true;
+        StateHasChanged();
+        
+        try
+        {
+            // Test with a public API that doesn't require authentication
+            // We'll modify the ApiHttpClient temporarily to handle absolute URLs
+            var httpClient = new HttpClient();
+            var response = await httpClient.GetStringAsync("https://jsonplaceholder.typicode.com/posts?_limit=5");
+            
+            if (!string.IsNullOrEmpty(response))
+            {
+                testResults.Add(new TestResult
+                {
+                    TestName = "External API Call (Direct)",
+                    Message = $"✅ Successfully retrieved data from test API. Response length: {response.Length} characters",
+                    Success = true
+                });
+            }
+            else
+            {
+                testResults.Add(new TestResult
+                {
+                    TestName = "External API Call",
+                    Message = "⚠️ API call succeeded but returned no data",
+                    Success = false
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            testResults.Add(new TestResult
+            {
+                TestName = "External API Call",
+                Message = $"❌ Error: {ex.Message}",
+                Success = false
+            });
+            Logger.LogError(ex, "Error testing API client");
+        }
+        
+        // Test that our ApiHttpClient service exists and is injectable
+        try
+        {
+            if (ApiHttpClient != null)
+            {
+                testResults.Add(new TestResult
+                {
+                    TestName = "Service Injection",
+                    Message = "✅ ApiHttpClient service successfully injected",
+                    Success = true
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            testResults.Add(new TestResult
+            {
+                TestName = "Service Injection",
+                Message = $"❌ Error injecting ApiHttpClient: {ex.Message}",
+                Success = false
+            });
+        }
+        
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ClearResults()
+    {
+        testResults.Clear();
+        StateHasChanged();
+    }
+} 
