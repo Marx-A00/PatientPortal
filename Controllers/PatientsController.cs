@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PatientPortal.DTOs;
-using PatientPortal.Controllers;
 using PatientPortal.Services;
 
 namespace PatientPortal.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Policy = "ApiScope")] // Use JWT Bearer token policy
 public class PatientsController : ControllerBase
 {
     private readonly IPatientService _patientService;
@@ -112,12 +111,12 @@ public class PatientsController : ControllerBase
         try
         {
             _logger.LogInformation("API: Updating patient with ID: {Id}", id);
-            
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            
+
             var updatedPatient = await _patientService.UpdatePatientAsync(id, updateDto);
             return Ok(updatedPatient);
         }
@@ -151,5 +150,10 @@ public class PatientsController : ControllerBase
             _logger.LogError(ex, "Error deleting patient with ID: {Id}", id);
             return StatusCode(500, "An error occurred while deleting the patient");
         }
+    }
+    [HttpGet("health")]
+    public ActionResult<string> HealthCheck()
+    {
+        return Ok($"API is working! Time: {DateTime.Now}");
     }
 }

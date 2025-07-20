@@ -6,6 +6,7 @@ using Okta.AspNetCore;
 namespace PatientPortal.Controllers
 {
     [Route("[controller]/[action]")]
+    [ApiExplorerSettings(IgnoreApi = true)] // Exclude from Swagger/API discovery
     public class AccountController : Controller
     {
         public IActionResult SignIn([FromQuery] string returnUrl)
