@@ -15,84 +15,87 @@
             <strong>🚀 Now using API!</strong> This data comes from your REST API with JWT authentication.
         </div>
 
-
-        @if (selectedPatient != null)
-        {
-            <div class="card mt-3">
-                <div class="card-header">
-                    <h5>Selected Patient</h5>
-                    <button @onclick="() => ClearSelectedPatient()">Clear Patient</button>
-                </div>
-                <div class="card-body">
-                    <strong>ID:</strong> @selectedPatient.Id<br />
-                    <strong>Name:</strong> @selectedPatient.Name<br />
-                    <strong>Age:</strong> @selectedPatient.Age<br />
-                    <strong>Email:</strong> @selectedPatient.Email<br />
-                </div>
-            </div>
-        }
-        else
-        {
-
-            <div class="card mt-3">
-                <div class="card-header">
-                    <h5>Selected Patient</h5>
-                    <button @onclick="() => ClearSelectedPatient()">Clear Patient</button>
-                </div>
-                <div class="card-body">
-                    <p>Please Select a patient</p>
-                </div>
-            </div>
-
-        }
-
         @if (patients == null)
         {
             <p>Loading...</p>
         }
         else
         {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Age</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var patient in patients)
+            <MudTable Items="@patients" Hover="true" Breakpoint="Breakpoint.Sm">
+                <ColGroup>
+                    <col style="width:200px;" />
+                    <col style="width:100px;" />
+                    <col />
+                    <col style="width:100px;" />
+                    <col />
+                </ColGroup>
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Age</MudTh>
+                    <MudTh>Email</MudTh>
+                </HeaderContent>
+                <RowTemplate Context="patient">
+                    <MudTd>
+                        <MudButton Variant="Variant.Outlined" Size="Size.Small" 
+                            StartIcon="@Icons.Custom.Uncategorized.Baguette"
+                            OnClick="@(() => ShowBtnPress(patient.Id))">
+                            @(expandedPatientIds.Contains(patient.Id) ? "Hide" : "Show") Details
+                        </MudButton>
+                    </MudTd>
+                    <MudTd DataLabel="ID">@patient.Id</MudTd>
+                    <MudTd DataLabel="Name">@patient.Name</MudTd>
+                    <MudTd DataLabel="Age">@patient.Age</MudTd>
+                    <MudTd DataLabel="Email">@patient.Email</MudTd>
+                </RowTemplate>
+                <ChildRowContent Context="patient">
+                    @if (expandedPatientIds.Contains(patient.Id))
                     {
-                        <tr>
-                            <td>@patient.Id</td>
-                            <td>@patient.Name</td>
-                            <td>@patient.Age</td>
-                            <td>@patient.Email</td>
-                            <td>
-                                <MudButton Variant="Variant.Text" Color="Color.Primary"
-                                    @onclick="() => GetSinglePatient(patient.Id)">
-                                    👁️ View
-                                </MudButton>
+                        <MudTr>
+                            <td colspan="5">
+                                <MudCard Elevation="0">
+                                    <MudCardHeader>
+                                        <CardHeaderContent>
+                                            <MudText Typo="Typo.body1">Additional Details for <strong>@patient.Name</strong></MudText>
+                                        </CardHeaderContent>
+                                    </MudCardHeader>
+                                    <MudCardContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText><strong>Patient ID:</strong> @patient.Id</MudText>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText><strong>Email:</strong> @patient.Email</MudText>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText><strong>Age:</strong> @patient.Age years</MudText>
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                @* <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                                    @onclick="() => GetSinglePatient(patient.Id)">
+                                                    👁️ View Full Details
+                                                </MudButton> *@
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudCardContent>
+                                </MudCard>
                             </td>
-
-                        </tr>
+                        </MudTr>
                     }
-                </tbody>
-            </table>
-
-
+                </ChildRowContent>
+            </MudTable>
         }
 
     </Authorized>
     <NotAuthorized>
-        need 2 sign in cuh
+        You must sign in
     </NotAuthorized>
 </AuthorizeView>
 @code {
     private IEnumerable<PatientResponseDto>? patients;
-    private PatientResponseDto? selectedPatient;
     private string? errorMessage;
+    private HashSet<int> expandedPatientIds = new HashSet<int>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -127,19 +130,25 @@
         try
         {
             Logger.LogInformation("🔍 Getting single patient {Id} from API".Pastel(DrawingColor.Cyan), id);
-            selectedPatient = await ApiHttpClient.GetAsync<PatientResponseDto>($"patients/{id}");
+            var patient = await ApiHttpClient.GetAsync<PatientResponseDto>($"patients/{id}");
             Logger.LogInformation("✅ Successfully loaded patient {Id} from API".Pastel(DrawingColor.Green), id);
+            // You can add navigation or other logic here if needed
         }
         catch (Exception ex)
         {
             errorMessage = $"Error getting patient {id}: {ex.Message}";
             Logger.LogError(ex, "❌ Error getting patient {Id} from API".Pastel(DrawingColor.Red), id);
-
         }
     }
-    private void ClearSelectedPatient()
+    private void ShowBtnPress(int patientId)
     {
-        selectedPatient = null;
-        StateHasChanged();
+        if (expandedPatientIds.Contains(patientId))
+        {
+            expandedPatientIds.Remove(patientId);
+        }
+        else
+        {
+            expandedPatientIds.Add(patientId);
+        }
     }
 }
