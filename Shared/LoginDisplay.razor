@@ -1,9 +1,20 @@
 <AuthorizeView>
     <Authorized>
-        <a href="#">Hello, @context.User.Identity.Name!</a>
-        <a href="Account/SignOut">Sign out</a>
+        <MudMenu>
+            <ActivatorContent>
+                <MudButton Variant="Variant.Text" Color="Color.Inherit" StartIcon="Icons.Material.Filled.Person">
+                    @context.User.Identity?.Name
+                </MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem Href="Account/SignOut" Icon="Icons.Material.Filled.Logout">Sign out</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
     </Authorized>
     <NotAuthorized>
-        <a href="Account/SignIn">Sign in</a>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="Account/SignIn"
+            StartIcon="Icons.Material.Filled.Login">
+            Sign in
+        </MudButton>
     </NotAuthorized>
 </AuthorizeView>

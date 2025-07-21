@@ -2,7 +2,7 @@
 @using PatientPortal.Services
 @using PatientPortal.DTOs
 @using Pastel
-@using System.Drawing
+@using DrawingColor = System.Drawing.Color
 @inject IApiHttpClient ApiHttpClient
 @inject ILogger<Patients> Logger
 
@@ -70,9 +70,10 @@
                             <td>@patient.Age</td>
                             <td>@patient.Email</td>
                             <td>
-                                <button class="btn btn-info btn-sm" @onclick="() => GetSinglePatient(patient.Id)">
+                                <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                    @onclick="() => GetSinglePatient(patient.Id)">
                                     👁️ View
-                                </button>
+                                </MudButton>
                             </td>
 
                         </tr>
@@ -108,12 +109,13 @@
 
             patients = await ApiHttpClient.GetAsync<IEnumerable<PatientResponseDto>>("patients");
 
-            Logger.LogInformation("✅ Successfully loaded {Count} patients from API".Pastel(Color.Green), patients?.Count() ?? 0);
+            Logger.LogInformation("✅ Successfully loaded {Count} patients from API".Pastel(DrawingColor.Green), patients?.Count() ??
+            0);
         }
         catch (Exception ex)
         {
             errorMessage = ex.Message;
-            Logger.LogError(ex, "❌ Error loading patients from API".Pastel(Color.Red));
+            Logger.LogError(ex, "❌ Error loading patients from API".Pastel(DrawingColor.Red));
         }
         finally
         {
@@ -124,14 +126,14 @@
     {
         try
         {
-            Logger.LogInformation("🔍 Getting single patient {Id} from API".Pastel(Color.Cyan), id);
+            Logger.LogInformation("🔍 Getting single patient {Id} from API".Pastel(DrawingColor.Cyan), id);
             selectedPatient = await ApiHttpClient.GetAsync<PatientResponseDto>($"patients/{id}");
-            Logger.LogInformation("✅ Successfully loaded patient {Id} from API".Pastel(Color.Green), id);
+            Logger.LogInformation("✅ Successfully loaded patient {Id} from API".Pastel(DrawingColor.Green), id);
         }
         catch (Exception ex)
         {
             errorMessage = $"Error getting patient {id}: {ex.Message}";
-            Logger.LogError(ex, "❌ Error getting patient {Id} from API".Pastel(Color.Red), id);
+            Logger.LogError(ex, "❌ Error getting patient {Id} from API".Pastel(DrawingColor.Red), id);
 
         }
     }

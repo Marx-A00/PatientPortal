@@ -9,6 +9,7 @@ using PatientPortal.Repositories;
 using PatientPortal.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddControllers();
+
+builder.Services.AddMudServices();
+
 builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();

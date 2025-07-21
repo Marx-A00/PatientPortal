@@ -110,7 +110,7 @@ Building a patient portal application with Blazor Server, Okta authentication, E
   - Display patients in data grid
   - Add sorting and pagination
   - Implement search functionality
-- [ ] Wire up to API with authenticated HTTP calls
+- [x] Wire up to API with authenticated HTTP calls
 - [ ] fix SSL shit with this:
 Visual studio makes it easy and gives you a popup asking you if you want it to create a self-signed cert for https apps. 
 You can do the same thing in vscode via cmd line:
