@@ -133,7 +133,7 @@ dotnet dev-certs https --trust
 **Goal**: Full CRUD UI for patient management
 
 #### Morning Session (4 hours)
-- [ ] Create patient detail/view component
+- [x] Create patient detail/view component
 - [ ] Implement edit patient form
 - [ ] Add delete confirmation dialog
 - [ ] Create navigation between components

@@ -4,6 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <UserSecretsId>4d936ed1-1683-42db-a2cb-a19ac4b9c53b</UserSecretsId>
   </PropertyGroup>
 
@@ -15,7 +17,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.25" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="MudBlazor" Version="8.10.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageReference Include="Okta.AspNetCore" Version="4.6.3" />
     <PackageReference Include="Pastel" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
