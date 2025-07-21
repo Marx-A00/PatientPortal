@@ -91,10 +91,10 @@ Building a patient portal application with Blazor Server, Okta authentication, E
 - [x] Add request/response logging
 
 #### Day 6 Morning (4 hours)
-- [ ] Add API versioning
-- [ ] Implement global exception handling
-- [ ] Create health check endpoints
-- [ ] Add API rate limiting
+- [ ] ~~Add API versioning~~
+- [ ] ~~Implement global exception handling~~
+- [ ] ~~Create health check endpoints~~
+- [ ] ~~Add API rate limiting~~
 
 #### Day 6 Afternoon (4 hours)
 - [ ] Test all API endpoints with Postman/Swagger
@@ -111,6 +111,13 @@ Building a patient portal application with Blazor Server, Okta authentication, E
   - Add sorting and pagination
   - Implement search functionality
 - [ ] Wire up to API with authenticated HTTP calls
+- [ ] fix SSL shit with this:
+Visual studio makes it easy and gives you a popup asking you if you want it to create a self-signed cert for https apps. 
+You can do the same thing in vscode via cmd line:
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
+(do this in your project directory)
+
 
 #### Afternoon Session (4 hours)
 - [ ] Create patient registration form

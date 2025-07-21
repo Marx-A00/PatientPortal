@@ -17,7 +17,7 @@ public class ApiHttpClient : IApiHttpClient
         _tokenService = tokenService;
         _configuration = configuration;
 
-        _httpClient.BaseAddress = new Uri(_configuration["ApiBaseUrl"] ?? "https://localhost:7047/api/");
+        _httpClient.BaseAddress = new Uri("https://localhost:7047/api/");
     }
 
     private async Task<HttpClient> GetAuthenticatedClientAsync()

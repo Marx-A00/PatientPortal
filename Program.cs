@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddUserSecrets<Program>();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -31,19 +31,31 @@ builder.Services.AddScoped<IPatientService, PatientService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddHttpClient<IApiHttpClient, ApiHttpClient>();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHttpClient<IApiHttpClient, ApiHttpClient>()
+        .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        });
+}
+else
+{
+    builder.Services.AddHttpClient<IApiHttpClient, ApiHttpClient>();
+}
 
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "Patient Portal API", 
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Patient Portal API",
         Version = "v1",
         Description = "A simple example ASP.NET Core Web API for patient management"
     });
-    
+
     // Add JWT Authentication to Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -53,7 +65,7 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-    
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -108,7 +120,7 @@ builder.Services.AddAuthorization(options =>
         policy.AuthenticationSchemes.Add("Bearer");
         policy.RequireAuthenticatedUser();
     });
-    
+
     // Policy for Blazor pages (uses cookies)
     options.AddPolicy("BlazorAuth", policy =>
     {

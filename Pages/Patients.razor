@@ -1,7 +1,9 @@
 @page "/patients"
 @using PatientPortal.Services
 @using PatientPortal.DTOs
-@inject IPatientService PatientService
+@using Pastel
+@using System.Drawing
+@inject IApiHttpClient ApiHttpClient
 @inject ILogger<Patients> Logger
 
 <PageTitle>Patients</PageTitle>
@@ -9,58 +11,133 @@
 <h3>Patient List</h3>
 <AuthorizeView>
     <Authorized>
+        <div class="alert alert-info">
+            <strong>🚀 Now using API!</strong> This data comes from your REST API with JWT authentication.
+        </div>
 
 
-@if (patients == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-     <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var patient in patients)
-            {
-                <tr>
-                    <td>@patient.Id</td>
-                    <td>@patient.Name</td>
-                    <td>@patient.Age</td>
-                    <td>@patient.Email</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    
-
-
-
-}
-
-@code {
-    private IEnumerable<PatientResponseDto>? patients;
-    
-    protected override async Task OnInitializedAsync()
-    {
-        try
+        @if (selectedPatient != null)
         {
-            patients = await PatientService.GetAllPatientsAsync();
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Selected Patient</h5>
+                    <button @onclick="() => ClearSelectedPatient()">Clear Patient</button>
+                </div>
+                <div class="card-body">
+                    <strong>ID:</strong> @selectedPatient.Id<br />
+                    <strong>Name:</strong> @selectedPatient.Name<br />
+                    <strong>Age:</strong> @selectedPatient.Age<br />
+                    <strong>Email:</strong> @selectedPatient.Email<br />
+                </div>
+            </div>
         }
-        catch (Exception ex)
+        else
         {
-            Logger.LogError(ex, "Error loading patients");
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Selected Patient</h5>
+                    <button @onclick="() => ClearSelectedPatient()">Clear Patient</button>
+                </div>
+                <div class="card-body">
+                    <p>Please Select a patient</p>
+                </div>
+            </div>
+
         }
-    }
-}
+
+        @if (patients == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var patient in patients)
+                    {
+                        <tr>
+                            <td>@patient.Id</td>
+                            <td>@patient.Name</td>
+                            <td>@patient.Age</td>
+                            <td>@patient.Email</td>
+                            <td>
+                                <button class="btn btn-info btn-sm" @onclick="() => GetSinglePatient(patient.Id)">
+                                    👁️ View
+                                </button>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        }
+
     </Authorized>
     <NotAuthorized>
         need 2 sign in cuh
     </NotAuthorized>
 </AuthorizeView>
+@code {
+    private IEnumerable<PatientResponseDto>? patients;
+    private PatientResponseDto? selectedPatient;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPatients();
+    }
+
+    private async Task LoadPatients()
+    {
+        try
+        {
+            errorMessage = null;
+            patients = null;
+            StateHasChanged();
+
+            patients = await ApiHttpClient.GetAsync<IEnumerable<PatientResponseDto>>("patients");
+
+            Logger.LogInformation("✅ Successfully loaded {Count} patients from API".Pastel(Color.Green), patients?.Count() ?? 0);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            Logger.LogError(ex, "❌ Error loading patients from API".Pastel(Color.Red));
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+    private async Task GetSinglePatient(int id)
+    {
+        try
+        {
+            Logger.LogInformation("🔍 Getting single patient {Id} from API".Pastel(Color.Cyan), id);
+            selectedPatient = await ApiHttpClient.GetAsync<PatientResponseDto>($"patients/{id}");
+            Logger.LogInformation("✅ Successfully loaded patient {Id} from API".Pastel(Color.Green), id);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error getting patient {id}: {ex.Message}";
+            Logger.LogError(ex, "❌ Error getting patient {Id} from API".Pastel(Color.Red), id);
+
+        }
+    }
+    private void ClearSelectedPatient()
+    {
+        selectedPatient = null;
+        StateHasChanged();
+    }
+}
