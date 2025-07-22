@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-
-namespace PatientPortal.PatientPortalTest;
+﻿namespace PatientPortal.Tests;
 
 public class Tests
 {
