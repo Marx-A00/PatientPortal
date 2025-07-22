@@ -28,8 +28,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddMudServices();
 
-builder.Services.AddSingleton<WeatherForecastService>();
-
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 

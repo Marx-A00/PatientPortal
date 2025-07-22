@@ -6,5 +6,7 @@ public class Patient
     public required string Name { get; set; }
     public DateTime DOB { get; set; }
     public required string Email { get; set; }
-    
+
+    public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
 }
