@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientPortal", "PatientPortal.csproj", "{F26FF982-BFE0-B45F-DB0D-076EBB460588}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientPortal", "PatientPortal\PatientPortal.csproj", "{F26FF982-BFE0-B45F-DB0D-076EBB460588}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatientPortal.Tests", "PatientPortal.Tests\PatientPortal.Tests.csproj", "{F1573836-DAF5-4075-8498-16BF6672E0D9}"
 EndProject
