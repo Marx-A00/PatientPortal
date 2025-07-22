@@ -1,0 +1,154 @@
+@page "/patients"
+@using PatientPortal.Services
+@using PatientPortal.DTOs
+@using Pastel
+@using DrawingColor = System.Drawing.Color
+@inject IApiHttpClient ApiHttpClient
+@inject ILogger<Patients> Logger
+
+<PageTitle>Patients</PageTitle>
+
+<h3>Patient List</h3>
+<AuthorizeView>
+    <Authorized>
+        <div class="alert alert-info">
+            <strong>🚀 Now using API!</strong> This data comes from your REST API with JWT authentication.
+        </div>
+
+        @if (patients == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <MudTable Items="@patients" Hover="true" Breakpoint="Breakpoint.Sm">
+                <ColGroup>
+                    <col style="width:200px;" />
+                    <col style="width:100px;" />
+                    <col />
+                    <col style="width:100px;" />
+                    <col />
+                </ColGroup>
+                <HeaderContent>
+                    <MudTh></MudTh>
+                    <MudTh>ID</MudTh>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Age</MudTh>
+                    <MudTh>Email</MudTh>
+                </HeaderContent>
+                <RowTemplate Context="patient">
+                    <MudTd>
+                        <MudButton Variant="Variant.Outlined" Size="Size.Small" 
+                            StartIcon="@Icons.Custom.Uncategorized.Baguette"
+                            OnClick="@(() => ShowBtnPress(patient.Id))">
+                            @(expandedPatientIds.Contains(patient.Id) ? "Hide" : "Show") Details
+                        </MudButton>
+                    </MudTd>
+                    <MudTd DataLabel="ID">@patient.Id</MudTd>
+                    <MudTd DataLabel="Name">@patient.Name</MudTd>
+                    <MudTd DataLabel="Age">@patient.Age</MudTd>
+                    <MudTd DataLabel="Email">@patient.Email</MudTd>
+                </RowTemplate>
+                <ChildRowContent Context="patient">
+                    @if (expandedPatientIds.Contains(patient.Id))
+                    {
+                        <MudTr>
+                            <td colspan="5">
+                                <MudCard Elevation="0">
+                                    <MudCardHeader>
+                                        <CardHeaderContent>
+                                            <MudText Typo="Typo.body1">Additional Details for <strong>@patient.Name</strong></MudText>
+                                        </CardHeaderContent>
+                                    </MudCardHeader>
+                                    <MudCardContent>
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText><strong>Patient ID:</strong> @patient.Id</MudText>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText><strong>Email:</strong> @patient.Email</MudText>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText><strong>Age:</strong> @patient.Age years</MudText>
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                @* <MudButton Variant="Variant.Text" Color="Color.Primary"
+                                                    @onclick="() => GetSinglePatient(patient.Id)">
+                                                    👁️ View Full Details
+                                                </MudButton> *@
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudCardContent>
+                                </MudCard>
+                            </td>
+                        </MudTr>
+                    }
+                </ChildRowContent>
+            </MudTable>
+        }
+
+    </Authorized>
+    <NotAuthorized>
+        You must sign in
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    private IEnumerable<PatientResponseDto>? patients;
+    private string? errorMessage;
+    private HashSet<int> expandedPatientIds = new HashSet<int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPatients();
+    }
+
+    private async Task LoadPatients()
+    {
+        try
+        {
+            errorMessage = null;
+            patients = null;
+            StateHasChanged();
+
+            patients = await ApiHttpClient.GetAsync<IEnumerable<PatientResponseDto>>("patients");
+
+            Logger.LogInformation("✅ Successfully loaded {Count} patients from API".Pastel(DrawingColor.Green), patients?.Count() ??
+            0);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            Logger.LogError(ex, "❌ Error loading patients from API".Pastel(DrawingColor.Red));
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+    private async Task GetSinglePatient(int id)
+    {
+        try
+        {
+            Logger.LogInformation("🔍 Getting single patient {Id} from API".Pastel(DrawingColor.Cyan), id);
+            var patient = await ApiHttpClient.GetAsync<PatientResponseDto>($"patients/{id}");
+            Logger.LogInformation("✅ Successfully loaded patient {Id} from API".Pastel(DrawingColor.Green), id);
+            // You can add navigation or other logic here if needed
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error getting patient {id}: {ex.Message}";
+            Logger.LogError(ex, "❌ Error getting patient {Id} from API".Pastel(DrawingColor.Red), id);
+        }
+    }
+    private void ShowBtnPress(int patientId)
+    {
+        if (expandedPatientIds.Contains(patientId))
+        {
+            expandedPatientIds.Remove(patientId);
+        }
+        else
+        {
+            expandedPatientIds.Add(patientId);
+        }
+    }
+}

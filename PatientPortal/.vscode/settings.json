@@ -1,0 +1,47 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".vxnotes": true,
+        "**/bin": true,
+        "**/obj": true,
+        "**/node_modules": true
+    },
+    "files.watcherExclude": {
+        "**/bin/**": true,
+        "**/obj/**": true,
+        "**/node_modules/**": true,
+        "**/.git/**": true
+    },
+    "search.exclude": {
+        "**/bin": true,
+        "**/obj": true,
+        "**/node_modules": true
+    },
+    "emmet.includeLanguages": {
+        "razor": "html"
+    },
+    "emmet.excludeLanguages": [
+        "razor"
+    ],
+    "[razor]": {
+        "editor.suggest.snippetsPreventQuickSuggestions": false
+    },
+    "omnisharp.useModernNet": true,
+    "omnisharp.enableEditorConfigSupport": true,
+    "csharp.semanticHighlighting.enabled": false,
+    "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": false,
+    "typescript.disableAutomaticTypeAcquisition": true,
+    "extensions.autoUpdate": false,
+    "files.hotExit": "onExitAndWindowClose",
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "editor.suggest.localityBonus": true,
+    "editor.suggest.shareSuggestSelections": false
+}

@@ -1,0 +1,20 @@
+<AuthorizeView>
+    <Authorized>
+        <MudMenu>
+            <ActivatorContent>
+                <MudButton Variant="Variant.Text" Color="Color.Inherit" StartIcon="Icons.Material.Filled.Person">
+                    @context.User.Identity?.Name
+                </MudButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem Href="Account/SignOut" Icon="Icons.Material.Filled.Logout">Sign out</MudMenuItem>
+            </ChildContent>
+        </MudMenu>
+    </Authorized>
+    <NotAuthorized>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Href="Account/SignIn"
+            StartIcon="Icons.Material.Filled.Login">
+            Sign in
+        </MudButton>
+    </NotAuthorized>
+</AuthorizeView>
