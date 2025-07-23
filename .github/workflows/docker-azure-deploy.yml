@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/patientportal
+  IMAGE_NAME: marx-a00/patientportal/patientportal
   AZURE_CONTAINER_APP_NAME: patientportal-demo
   AZURE_RESOURCE_GROUP: rg-patientportal-containers
   AZURE_CONTAINER_ENVIRONMENT: patientportal-env
@@ -65,5 +65,5 @@ jobs:
         az containerapp update \
           --name ${{ env.AZURE_CONTAINER_APP_NAME }} \
           --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+          --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
           --set-env-vars "ASPNETCORE_ENVIRONMENT=Production" "KeyVaultUri=${{ secrets.AZURE_KEYVAULT_URI }}" 
