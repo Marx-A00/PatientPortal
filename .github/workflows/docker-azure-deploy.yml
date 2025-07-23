@@ -66,6 +66,4 @@ jobs:
           --name ${{ env.AZURE_CONTAINER_APP_NAME }} \
           --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
           --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-          --set-env-vars \
-            ASPNETCORE_ENVIRONMENT=Production \
-            KeyVaultUri=${{ secrets.AZURE_KEYVAULT_URI }} 
+          --set-env-vars ASPNETCORE_ENVIRONMENT=Production KeyVaultUri=${{ secrets.AZURE_KEYVAULT_URI }} 
