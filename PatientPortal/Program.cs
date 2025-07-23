@@ -10,10 +10,28 @@ using PatientPortal.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using MudBlazor.Services;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddUserSecrets<Program>();
+// Configure secrets management based on environment
+if (builder.Environment.IsDevelopment())
+{
+    // Development: Use User Secrets (secure for local dev)
+    builder.Configuration.AddUserSecrets<Program>();
+}
+else
+{
+    // Production: Use Azure Key Vault with Managed Identity
+    var keyVaultUri = builder.Configuration["KeyVaultUri"];
+    if (!string.IsNullOrEmpty(keyVaultUri))
+    {
+        builder.Configuration.AddAzureKeyVault(
+            new Uri(keyVaultUri),
+            new DefaultAzureCredential()
+        );
+    }
+}
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
